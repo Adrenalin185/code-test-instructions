@@ -1,0 +1,27 @@
+package tpx.test.url_service.controllers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import tpx.test.url_service.entities.Url;
+import tpx.test.url_service.services.URLService;
+
+import java.util.List;
+
+
+@RestController
+@RequestMapping("/url")
+public class URLController {
+
+    @Autowired
+    private URLService service;
+
+    @GetMapping("/urls")
+    public ResponseEntity<List<Url>> getAllURLs() {
+        return service.getAllURLS();
+    }
+
+
+}

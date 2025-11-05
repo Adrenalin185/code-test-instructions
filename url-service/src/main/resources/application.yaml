@@ -1,13 +1,12 @@
 spring:
   application:
     name: url-service
+  datasource:
+    url: jdbc:mysql://MYSQL_TPXTEST:9090/TEST
+    password: default
+    username: default
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-
-#  datasource:
-#    url: jdbc:mysql://MYSQL-TPXTEST:9090/TEST
-#    password: default
-#    username: default
-#    driver-class-name: com.mysql.cj.jdbc.Driver

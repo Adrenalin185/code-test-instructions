@@ -6,7 +6,7 @@ COPY /url-service/pom.xml .
 RUN mvn dependency:go-offline -B
 
 COPY /url-service/src ./src
-RUN mvn clean package -DskipTests
+RUN mvn clean package
 
 FROM amazoncorretto:21-alpine
 WORKDIR /url-service
