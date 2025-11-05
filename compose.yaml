@@ -1,0 +1,37 @@
+services:
+  url-service:
+    build:
+      dockerfile: /url-service/Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: URL_SERVICE
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://MYSQL_TPXTEST:9090/TEST
+      SPRING_DATASOURCE_USERNAME: default
+      SPRING_DATASOURCE_PASSWORD: default
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DIALECT: jakarta.persistence.jdbc.url
+    depends_on:
+      - MYSQL_TPXTEST
+
+  url-ui-service:
+    build:
+      dockerfile: /url-ui-service/Dockerfile
+    container_name: URL_UI_SERVICE
+    ports:
+      - "3000:80"
+
+  MYSQL_TPXTEST:
+    image: mysql:9.0
+    container_name: MYSQL_TPXTEST
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: TEST
+      MYSQL_USER: default
+      MYSQL_PASSWORD: default
+    ports:
+      - "9090:3306"
+    volumes:
+      - ./mysql-resources:/mysql
+      - ./mysql-resources:/docker-entrypoint-initdb.d
