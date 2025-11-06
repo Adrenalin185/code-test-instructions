@@ -1,12 +1,12 @@
 import {useEffect, useState} from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import axios from 'axios'
 
 function App() {
 
     const [urls, setURLS] = useState([]);
+    const [url, setURL] = useState("");
+    const [alias, setAlias] = useState("");
 
     useEffect(() => {
         axios.get('http://localhost:8080/url/urls')
@@ -15,15 +15,43 @@ function App() {
             )
     }, []);
 
+    function postUrl() {
+        axios.post("http://localhost:8080/url/shorten", {
+            url,
+            alias
+        })
+            .then(response =>
+            setURLS(response.data)
+            )
+            .catch(error =>
+            console.log(error.data)
+            )
+    }
+
+
     return (
         <>
+            <h1>Post new URL</h1>
+            <form>
+                <label>Url</label><br/>
+                <input className="originalUrl" onChange={(e) => setURL(e.target.value)} name="url" value={url} type="text"></input><br/>
+                <label>Alias</label><br/>
+                <input className="urlAlias" onChange={(e) => setAlias(e.target.value)} name="alias" value={alias} type="text"></input><br/>
+                <button onClick={postUrl}>Send Request</button>
+            </form>
+
+
+
             <h1>All URLS</h1>
             <table>
+                <thead>
                 <tr>
                     <th>Full URL</th>
                     <th>Short URL</th>
                     <th>Alias</th>
                 </tr>
+                </thead>
+                <tbody>
                 {urls.map((url) => {
                     return (
                         <tr>
@@ -33,6 +61,7 @@ function App() {
                         </tr>
                     )
                 })}
+                </tbody>
             </table>
         </>
     )
