@@ -26,6 +26,7 @@ function App() {
             .catch(error =>
             console.log('Url failed to shorten:', error.data)
             )
+        window.location.reload();
     }
 
     function openURL() {
@@ -41,15 +42,14 @@ function App() {
     }
 
     function deleteURL () {
-        axios.delete('http://localhost:8080/url/'+ alias, {
-            validateStatus: status => status === 204
-        })
+        axios.delete('http://localhost:8080/url/'+ alias)
             .then(response => {
-                console.log('url deleted:'. response.data)
+                console.log('Deleted Successful:', response.data)
             })
             .catch(error => {
-                console.log('failed to delete:', error.data)
+                console.log('Error with deletion:', error.data)
             })
+        window.location.reload();
     }
 
 

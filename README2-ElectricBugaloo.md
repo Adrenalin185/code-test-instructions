@@ -20,3 +20,12 @@ from the code-test-instruction directory run the following command
 
 this should build the containers and start them inside of Docker.
 
+## Operation
+
+use the following link once the docker containers have successfully spun up to access the UI
+
+- http://localhost:3000/
+
+follow the steps of 'post' to create a new short url.
+open the url from its alias and delete it based on the same alias.
+the table at the bottom is to keep track of the urls.
