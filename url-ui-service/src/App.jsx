@@ -16,7 +16,7 @@ function App() {
     }, []);
 
     function postURL() {
-        axios.post("http://localhost:8080/url/shorten", {
+        axios.post('http://localhost:8080/url/shorten', {
             url,
             alias
         })
@@ -24,20 +24,32 @@ function App() {
             setURLS(response.data)
             )
             .catch(error =>
-            console.log(error.data)
+            console.log('Url failed to shorten:', error.data)
             )
     }
 
     function openURL() {
-        axios.get("http://localhost:8080/url/" + alias, {
+        axios.get('http://localhost:8080/url/'+ alias, {
             validateStatus: status => status === 302
         })
             .then(response =>
                 window.open(response.data, "_blank")
             )
             .catch(error =>
-            console.log(error.data)
+            console.log('Failed to retrieve Url:', error.data)
             )
+    }
+
+    function deleteURL () {
+        axios.delete('http://localhost:8080/url/'+ alias, {
+            validateStatus: status => status === 204
+        })
+            .then(response => {
+                console.log('url deleted:'. response.data)
+            })
+            .catch(error => {
+                console.log('failed to delete:', error.data)
+            })
     }
 
 
@@ -58,14 +70,20 @@ function App() {
             <input className="urlAlias" onChange={(e) => setAlias(e.target.value)} name="alias" value={alias} type="text"></input><br/>
             <button onClick={openURL}>Send Request</button><br/>
 
+            <h1>Delete URL from Alias</h1>
+            <label>Alias</label><br/>
+            <input className="urlAlias" onChange={(e) => setAlias(e.target.value)} name="alias" value={alias} type="text"></input><br/>
+            <button onClick={deleteURL}>Send Request</button><br/>
+
+
 
             <h1>All URLS</h1>
-            <table>
+            <table style={{"width":"100%"}}>
                 <thead>
                 <tr>
-                    <th>Full URL</th>
-                    <th>Short URL</th>
-                    <th>Alias</th>
+                    <th style={{"width":"33%"}}>Full URL</th>
+                    <th style={{"width":"33%"}}>Short URL</th>
+                    <th style={{"width":"33%"}}>Alias</th>
                 </tr>
                 </thead>
                 <tbody>

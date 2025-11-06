@@ -3,6 +3,7 @@ package tpx.test.url_service.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,5 +38,10 @@ public class URLController {
     @GetMapping("/{alias}")
     public Object getURLFromAlias(@PathVariable String alias) {
         return service.getURLFromAlias(alias);
+    }
+
+    @DeleteMapping("/{alias}")
+    public Object deleteUrlFromAlias(@PathVariable String alias) {
+        return service.deleteURLFromAlias(alias);
     }
 }

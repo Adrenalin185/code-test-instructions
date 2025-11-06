@@ -118,4 +118,52 @@ class URLServiceTest {
         assertThat(response.getBody()).isEqualTo("Alias Not Found");
         assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
+
+    @Test
+    void shouldReturn404ForInvalidAliasWithOtherAliases() {
+        given(repository.findAll()).willReturn(List.of(
+                new Url("HTTPS://www.web.com/very/long/url/link/for/reference/", "HTTPS://www.web.com/short", "123abc")
+        ));
+
+        ResponseEntity<String> response = service.getURLFromAlias("abc123");
+
+        Assertions.assertNotNull(response.getBody());
+        assertThat(response.getBody()).isEqualTo("Alias Not Found");
+        assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldDeleteURLFromAlias() {
+        given(repository.findAll()).willReturn(List.of(
+                new Url("HTTPS://www.web.com/very/long/url/link/for/reference/", "HTTPS://www.web.com/short", "abc123")
+        ));
+
+        ResponseEntity<String> response = service.deleteURLFromAlias("abc123");
+
+        Assertions.assertNotNull(response.getBody());
+        assertThat(response.getBody()).isEqualTo("Successfully deleted");
+        assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void shouldReturn404NotFoundForDeleteInvalidAlias() {
+        ResponseEntity<String> response = service.deleteURLFromAlias("abc123");
+
+        Assertions.assertNotNull(response.getBody());
+        assertThat(response.getBody()).isEqualTo("Alias Not Found");
+        assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldReturn404NotFoundForDeleteInvalidAliasWithOtherAliases() {
+        given(repository.findAll()).willReturn(List.of(
+                new Url("HTTPS://www.web.com/very/long/url/link/for/reference/", "HTTPS://www.web.com/short", "123abc")
+        ));
+
+        ResponseEntity<String> response = service.deleteURLFromAlias("abc123");
+
+        Assertions.assertNotNull(response.getBody());
+        assertThat(response.getBody()).isEqualTo("Alias Not Found");
+        assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
 }

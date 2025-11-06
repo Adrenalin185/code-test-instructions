@@ -55,11 +55,20 @@ public class URLService {
         List<Url> allUrls = repository.findAll();
         for(Url url : allUrls) {
             if (url.getAlias().equals(alias)) {
-                HttpHeaders headers = new HttpHeaders();
-                headers.setLocation(
-                        UriComponentsBuilder.fromPath("/url/" + alias).buildAndExpand(url.getOriginalUrl()).toUri()
-                );
                 return ResponseEntity.status(HttpStatus.FOUND).body(url.getOriginalUrl());
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alias Not Found");
+    }
+
+    public ResponseEntity<String> deleteURLFromAlias(String alias) {
+
+        List<Url> allUrls = repository.findAll();
+        for(Url url : allUrls) {
+            if (url.getAlias().equals(alias)) {
+                repository.delete(url);
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Successfully deleted");
             }
         }
 

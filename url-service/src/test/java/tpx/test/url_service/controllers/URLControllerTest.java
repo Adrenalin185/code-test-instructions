@@ -1,6 +1,5 @@
 package tpx.test.url_service.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -108,7 +108,7 @@ class URLControllerTest {
         String originalUrl = "{\"originalUrl\":\"HTTPS://www.web.com/very/long/url/link/for/reference\"}";
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(
-                UriComponentsBuilder.fromPath("/url/shortenedUrl").buildAndExpand(originalUrl).toUri()
+                UriComponentsBuilder.fromPath("/url/abc123").buildAndExpand(originalUrl).toUri()
         );
         ResponseEntity<String> response = new ResponseEntity<>(originalUrl, headers, HttpStatus.FOUND);
 
@@ -120,10 +120,28 @@ class URLControllerTest {
     }
 
     @Test
-    public void shouldReturn404NotFoundForInvalidAlias() throws Exception {
+    public void shouldReturn404NotFoundForGetInvalidAlias() throws Exception {
         given(controllerMock.getURLFromAlias("abc123")).willReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alias Not Found"));
 
         mockMvc.perform(get("/url/abc123"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").value("Alias Not Found"));
+    }
+
+    @Test
+    public void shouldDeleteURLFromAlias() throws Exception {
+        given(controllerMock.deleteUrlFromAlias("abc123")).willReturn(ResponseEntity.status(HttpStatus.NO_CONTENT).body("Successfully deleted"));
+
+        mockMvc.perform(delete("/url/abc123"))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$").value("Successfully deleted"));
+    }
+
+    @Test
+    public void shouldReturn404NotFoundForDeleteInvalidAlias() throws Exception {
+        given(controllerMock.deleteUrlFromAlias("abc123")).willReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alias Not Found"));
+
+        mockMvc.perform(delete("/url/abc123"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$").value("Alias Not Found"));
     }
