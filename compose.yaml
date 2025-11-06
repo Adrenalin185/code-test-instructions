@@ -5,8 +5,15 @@ services:
     ports:
       - "8080:8080"
     container_name: URL_SERVICE
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/TEST?autoReconnect=true
+      SPRING_DATASOURCE_USERNAME: default
+      SPRING_DATASOURCE_PASSWORD: default
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+      SPRING_JPA_HIBERNATE_DDL-AUTO: none
     depends_on:
-      - MYSQL_TPXTEST
+      - mysql
 
   url-ui-service:
     build:
@@ -15,7 +22,7 @@ services:
     ports:
       - "3000:80"
 
-  MYSQL_TPXTEST:
+  mysql:
     image: mysql:9.0
     container_name: MYSQL_TPXTEST
     restart: unless-stopped

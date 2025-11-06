@@ -1,35 +1,41 @@
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import axios from 'axios'
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const [urls, setURLS] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/url/urls')
+            .then(response =>
+                setURLS(response.data)
+            )
+    }, []);
+
+    return (
+        <>
+            <h1>All URLS</h1>
+            <table>
+                <tr>
+                    <th>Full URL</th>
+                    <th>Short URL</th>
+                    <th>Alias</th>
+                </tr>
+                {urls.map((url) => {
+                    return (
+                        <tr>
+                            <td>{url.originalUrl}</td>
+                            <td>{url.shortenedUrl}</td>
+                            <td>{url.alias}</td>
+                        </tr>
+                    )
+                })}
+            </table>
+        </>
+    )
 }
 
 export default App
