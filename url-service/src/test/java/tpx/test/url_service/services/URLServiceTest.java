@@ -96,4 +96,26 @@ class URLServiceTest {
         assertThat(response.getBody()).isEqualTo("Invalid input or alias already taken");
         assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
+    @Test
+    void shouldReturnUrlFromAlias() {
+        given(repository.findAll()).willReturn(List.of(
+                new Url("HTTPS://www.web.com/very/long/url/link/for/reference/", "HTTPS://www.web.com/short", "abc123")
+        ));
+
+        ResponseEntity<String> response = service.getURLFromAlias("abc123");
+
+        Assertions.assertNotNull(response.getBody());
+        assertThat(response.getBody()).isEqualTo("HTTPS://www.web.com/very/long/url/link/for/reference/");
+        assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.FOUND.value());
+    }
+
+    @Test
+    void shouldReturn404ForInvalidAlias() {
+        ResponseEntity<String> response = service.getURLFromAlias("abc123");
+
+        Assertions.assertNotNull(response.getBody());
+        assertThat(response.getBody()).isEqualTo("Alias Not Found");
+        assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,5 +32,10 @@ public class URLController {
     @PostMapping("/shorten")
     public ResponseEntity<String> addNewURL(@RequestBody URLShortenRequest urlShortenRequest) {
         return service.addNewUrl(urlShortenRequest);
+    }
+
+    @GetMapping("/{alias}")
+    public Object getURLFromAlias(@PathVariable String alias) {
+        return service.getURLFromAlias(alias);
     }
 }

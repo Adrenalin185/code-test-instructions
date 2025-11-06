@@ -30,9 +30,9 @@ public class URLService {
             return ResponseEntity.badRequest().body("Invalid input or alias already taken");
         }
 
-        List<Url> urlAliases = repository.findAll();
-        for (Url urlAlias : urlAliases) {
-            if (urlAlias.getAlias().equals(urlShortenRequest.getAlias())) {
+        List<Url> allURLs = repository.findAll();
+        for (Url url : allURLs) {
+            if (url.getAlias().equals(urlShortenRequest.getAlias())) {
                 return ResponseEntity.badRequest().body("Invalid input or alias already taken");
             }
         }
@@ -48,5 +48,21 @@ public class URLService {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(shortURLAddress);
+    }
+
+    public ResponseEntity<String> getURLFromAlias(String alias) {
+
+        List<Url> allUrls = repository.findAll();
+        for(Url url : allUrls) {
+            if (url.getAlias().equals(alias)) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setLocation(
+                        UriComponentsBuilder.fromPath("/url/" + alias).buildAndExpand(url.getOriginalUrl()).toUri()
+                );
+                return ResponseEntity.status(HttpStatus.FOUND).body(url.getOriginalUrl());
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alias Not Found");
     }
 }

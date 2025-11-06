@@ -102,4 +102,30 @@ class URLControllerTest {
                 .andExpect(jsonPath("$").value("Invalid input or alias already taken"));
     }
 
+    @Test
+    public void shouldReturnUrlFromAlias() throws Exception {
+
+        String originalUrl = "{\"originalUrl\":\"HTTPS://www.web.com/very/long/url/link/for/reference\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(
+                UriComponentsBuilder.fromPath("/url/shortenedUrl").buildAndExpand(originalUrl).toUri()
+        );
+        ResponseEntity<String> response = new ResponseEntity<>(originalUrl, headers, HttpStatus.FOUND);
+
+        given(controllerMock.getURLFromAlias("abc123")).willReturn(response);
+
+        mockMvc.perform(get("/url/abc123"))
+                .andExpect(status().isFound())
+                .andExpect(jsonPath("$.originalUrl").value("HTTPS://www.web.com/very/long/url/link/for/reference"));
+    }
+
+    @Test
+    public void shouldReturn404NotFoundForInvalidAlias() throws Exception {
+        given(controllerMock.getURLFromAlias("abc123")).willReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alias Not Found"));
+
+        mockMvc.perform(get("/url/abc123"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").value("Alias Not Found"));
+    }
+
 }

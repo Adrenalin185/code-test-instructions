@@ -15,13 +15,25 @@ function App() {
             )
     }, []);
 
-    function postUrl() {
+    function postURL() {
         axios.post("http://localhost:8080/url/shorten", {
             url,
             alias
         })
             .then(response =>
             setURLS(response.data)
+            )
+            .catch(error =>
+            console.log(error.data)
+            )
+    }
+
+    function openURL() {
+        axios.get("http://localhost:8080/url/" + alias, {
+            validateStatus: status => status === 302
+        })
+            .then(response =>
+                window.open(response.data, "_blank")
             )
             .catch(error =>
             console.log(error.data)
@@ -37,9 +49,14 @@ function App() {
                 <input className="originalUrl" onChange={(e) => setURL(e.target.value)} name="url" value={url} type="text"></input><br/>
                 <label>Alias</label><br/>
                 <input className="urlAlias" onChange={(e) => setAlias(e.target.value)} name="alias" value={alias} type="text"></input><br/>
-                <button onClick={postUrl}>Send Request</button>
+                <button onClick={postURL}>Send Request</button><br/>
             </form>
 
+
+            <h1>Open Url from Alias</h1>
+            <label>Alias</label><br/>
+            <input className="urlAlias" onChange={(e) => setAlias(e.target.value)} name="alias" value={alias} type="text"></input><br/>
+            <button onClick={openURL}>Send Request</button><br/>
 
 
             <h1>All URLS</h1>
